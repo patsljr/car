@@ -1,4 +1,4 @@
-from t1func import Vector, substract, pdiv
+from vec import Vector, substract, pdiv
 import math
 ## DO NOT HAVE MOVEMENT VECTORS WITH 0 as a component, it will crash this 
 def on_road(margin, pos_vec, vlis):
@@ -12,7 +12,21 @@ def on_road(margin, pos_vec, vlis):
                     return [True, vlis[i + 2]]
                 return [True, vlis[i + 1]]
         return False
+
+
+print(on_road(0.5, Vector(3, 7), [Vector(2, 4), Vector(1, 3), Vector(-3, 3)])[1].x,on_road(0.5, Vector(2.5, 5.4), [Vector(2, 4), Vector(1, 3), Vector(-1, 3)])[1].y )
+
+
+
+
+
+
+
 ## DO NOT HAVE MOVEMENT VECTORS WITH 0 as a component, it will crash this
+
+
+
+
 
 ##Note for today:
 ##Don't know what is going to happen if pos-vec is the intersection point of two vector
