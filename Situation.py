@@ -1,14 +1,14 @@
 from vec import *
 from typing import *
 from human import *
+import random
 class Situation:
     #Model has to be preloaded
     def __init__(self, margin:int, position:Vector, vectorStack:list[Vector], Motors: tuple(float, float), Camera, Model, confidenceThreshold, nmsThreshold, speed):
         self.position = position
-        self.VectorStack = VectorStack
+        self.VectorStack = vectorStack
         self.margin = margin
         self.Motors = Motors
-        self.Heading = Heading
         self.Camera = Camera
         self.Model = Model
         self.confidenceThreshold = confidenceThreshold
@@ -30,21 +30,22 @@ class Situation:
 
     def human_(self, frame):
         try:
-            human.detect(frame, self.Model, self.confidenceThreshold, self.nmsThreshold)
+            detect(frame, self.Model, self.confidenceThreshold, self.nmsThreshold)
         except:
             print("Error: Model has to be preloaded.")
             exit()
         #This function is made to simplify the coding when it comes to detecting humans. It also has error handling.
     def Heading(self):
         #returns current heading
-    def replaceCurrentVector(self, Vec):
-        
+        return 12
+    def substitute(self, Vec):
+        self.VectorStack[0] = Vec
 
 #   The general way the loop works is to feed vectors one after the other. When one vector is finished the next one fed in.
 
     def start(self):
         while True:
-            
+
             try:
                 yn, frame = self.Camera.read()
             except:
@@ -55,18 +56,32 @@ class Situation:
                 self.resetPosition()
                 self.removeFirstVector()
                 #Checks if current vector is finished, if it is, it removes that vector from the stack and resets position.
-            
+
             if(self.human_(frame) == True):
                 self.Motors = [0, 0]
                 continue
                 #Stops robot if humans are in frame.
-            
+
             if( 0<= abs(self.CurrentVector.angle() - self.Heading()) <= 1 ): #Checks if current heading and current vector have a big difference.
-                if( vec.pdiv(self.position, self.CurrentVector).nominal(self.margin)): #Checks if the
-                    self.Motors = tuple(speed, speed)
+                if( pdiv(self.position, self.CurrentVector).nominal(self.margin)): #Checks if the robot is on the vector.
+                    self.Motors = tuple(self.speed, self.speed)
                     continue
                 else:
-                    vec.substract(self.CurrentVector, self.position).angle()
+                    self.subsitute(substract(self.CurrentVector - self.position))
+            else:
+                one = abs(self.Heading() - self.CurrentVector.angle())
+                two = 360 - one
+                if (one > two):
+                    three = two
+                else:
+                    three = one 
+
+
+                if(self.Heading() > 180 and two == three):
+                    self.Motors = [self.speed, 0]
+                else:
+                    self.Motors = [0, self.speed]   #all of this code basically directs the robot, in the good direction if the robot is not in the good heading
+
                 
 
 
